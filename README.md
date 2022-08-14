@@ -14,6 +14,8 @@ git clone https://github.com/boolfalse/traversy-mern.git
 cd traversy-mern && npm install
 ```
 
+- Sign in to MongoDB Atlas and create a new database cluster. Get the connection string using **"Connect to your application"** option. Set that connection string in the `.env` **MONGO_URI** variable.
+
 - Setup `.env` file as mentioned in `.env.example` file.
 
 - Run the application:

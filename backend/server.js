@@ -1,7 +1,13 @@
 
 const express = require('express');
+const colors = require('colors');
+const connectDB = require('./config/db');
 const dotenv = require('dotenv').config();
 const port = process.env.PORT || 5000;
+
+connectDB().then(conn => {
+    console.log('MongoDB Connected...');
+});
 
 const app = express();
 
