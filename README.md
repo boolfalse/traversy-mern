@@ -3,8 +3,28 @@
 
 #### About:
 
-- RESTful API from scratch with Node.js, Express, MongoDB and Mongoose.
+- Learn The MERN Stack with Traversy Media
 
+
+#### Install:
+
+- Clone the repository and install dependencies:
+```
+git clone https://github.com/boolfalse/traversy-mern.git
+cd traversy-mern && npm install
+```
+
+- Setup `.env` file as mentioned in `.env.example` file.
+
+- Run the application:
+```bash
+# for development
+npm run server
+# for production
+npm run start
+```
+
+- View [the published Postman collection](https://documenter.getpostman.com/view/1747137/VUjSGPha)
 
 #### Resources:
 

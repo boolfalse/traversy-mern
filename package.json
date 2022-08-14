@@ -1,0 +1,32 @@
+{
+  "name": "traversy-mern",
+  "version": "1.0.0",
+  "description": "Learn MERN stack with Traversy Media",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boolfalse/traversy-mern.git"
+  },
+  "keywords": [
+    "MERN"
+  ],
+  "author": "boolfalse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boolfalse/traversy-mern/issues"
+  },
+  "homepage": "https://github.com/boolfalse/traversy-mern#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
