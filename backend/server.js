@@ -11,5 +11,7 @@ app.get('/api', (req, res) => {
         message: 'Root URL'
     });
 });
+// routes for /api/goal
+app.use('/api/goals', require('./routes/goals'));
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
