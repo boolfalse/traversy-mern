@@ -11,8 +11,9 @@ connectDB().then(conn => {
 
 const app = express();
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+// app.use(cors());
+app.use(express.json());
 
 
 
@@ -22,6 +23,7 @@ app.get('/api', (req, res) => {
         message: 'Root URL'
     });
 });
+app.use('/api/users', require('./routes/users'));
 app.use('/api/goals', require('./routes/goals'));
 
 

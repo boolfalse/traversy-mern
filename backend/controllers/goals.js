@@ -4,13 +4,22 @@ const Goal = require('../models/goal');
 
 module.exports = {
     all: asyncHandler(async (req, res) => {
-        const goals = await Goal.find();
+        try {
+            const goals = await Goal.find({
+                user: req.user.id,
+            });
 
-        return res.status(200).json({
-            success: true,
-            data: goals,
-            message: 'Goals'
-        });
+            return res.status(200).json({
+                success: true,
+                data: goals,
+                message: 'Goals'
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        }
     }),
     create: asyncHandler(async (req, res) => {
         if (!req.body.text) {
@@ -20,31 +29,48 @@ module.exports = {
             });
         }
 
-        const goal = await Goal.create(req.body);
+        try {
+            const goal = await Goal.create({
+                ...req.body,
+                user: req.user.id,
+            });
 
-        return res.status(200).json({
-            success: true,
-            data: goal,
-            message: 'Goal created successfully.'
-        });
+            return res.status(200).json({
+                success: true,
+                data: goal,
+                message: 'Goal created successfully.'
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        }
     }),
     single: asyncHandler(async (req, res) => {
-        const id = req.params?.id;
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            const goal = await Goal.findById(id);
-            if (goal) {
-                return res.status(200).json({
-                    success: true,
-                    data: goal,
-                    message: `Goal with id ${id} found.`
-                });
+        try {
+            const id = req.params?.id;
+            if (id.match(/^[0-9a-fA-F]{24}$/)) {
+                const goal = await Goal.findById(id);
+                if (goal && goal.user.toString() === req.user.id.toString()) {
+                    return res.status(200).json({
+                        success: true,
+                        data: goal,
+                        message: `Goal with id ${id} found.`
+                    });
+                }
             }
-        }
 
-        return res.status(404).json({
-            success: false,
-            message: `Goal not found!`
-        });
+            return res.status(404).json({
+                success: false,
+                message: `Goal not found!`
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        }
     }),
     update: asyncHandler(async (req, res) => {
         if (!req.body.text) {
@@ -54,41 +80,71 @@ module.exports = {
             });
         }
 
-        const id = req.params?.id;
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            const goal = await Goal.findByIdAndUpdate(id, req.body, { new: true });
-            if (goal) {
+        try {
+            const id = req.params?.id;
+            if (id.match(/^[0-9a-fA-F]{24}$/)) {
+                const goal = await Goal.findById(id);
+                if (!goal || goal.user.toString() !== req.user.id.toString()) {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Goal not found!`
+                    });
+                }
+
+                const updatedGoal = await Goal.findByIdAndUpdate(id, {
+                    text: req.body.text,
+                }, { new: true });
+
                 return res.status(200).json({
                     success: true,
-                    data: goal,
+                    data: updatedGoal,
                     message: `Goal with id ${id} updated.`
                 });
             }
-        }
 
-        return res.status(404).json({
-            success: false,
-            message: `Goal not found!`
-        });
+            return res.status(404).json({
+                success: false,
+                message: `Goal not found!`
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        }
     }),
     delete: asyncHandler(async (req, res) => {
-        const id = req.params?.id;
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            const goal = await Goal.findByIdAndDelete(id);
-            if (goal) {
+        try {
+            const id = req.params?.id;
+            if (id.match(/^[0-9a-fA-F]{24}$/)) {
+                const goal = await Goal.findById(id);
+                if (!goal || goal.user.toString() !== req.user.id.toString()) {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Goal not found!`
+                    });
+                }
+
+                const deletedGoal = await Goal.findByIdAndDelete(id);
+
                 return res.status(200).json({
                     success: true,
                     data: {
-                        id: goal._id,
+                        id: deletedGoal._id,
                     },
                     message: `Goal with id ${id} deleted.`
                 });
             }
-        }
 
-        return res.status(404).json({
-            success: false,
-            message: `Goal not found!`
-        });
+            return res.status(404).json({
+                success: false,
+                message: `Goal not found!`
+            });
+        } catch (err) {
+            return res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        }
     }),
 }
