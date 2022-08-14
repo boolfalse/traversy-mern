@@ -1,12 +1,14 @@
 
+const asyncHandler = require('express-async-handler');
+
 module.exports = {
-    all: (req, res) => {
+    all: asyncHandler(async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Goals'
         });
-    },
-    create: (req, res) => {
+    }),
+    create: asyncHandler(async (req, res) => {
         if (!req.body.text) {
             return res.status(400).json({
                 success: false,
@@ -18,23 +20,23 @@ module.exports = {
             success: true,
             message: 'New Goal created successfully.'
         });
-    },
-    single: (req, res) => {
+    }),
+    single: asyncHandler(async (req, res) => {
         return res.status(200).json({
             success: true,
             message: `Goal with id ${req.params.id} found.`
         });
-    },
-    update: (req, res) => {
+    }),
+    update: asyncHandler(async (req, res) => {
         return res.status(200).json({
             success: true,
             message: `Goal with id ${req.params.id} updated successfully.`
         });
-    },
-    delete: (req, res) => {
+    }),
+    delete: asyncHandler(async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Goal deleted successfully.'
         });
-    },
+    }),
 }
