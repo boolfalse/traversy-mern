@@ -30,6 +30,7 @@ npm run start
 
 #### Resources:
 
+- [Learn The MERN Stack](https://www.youtube.com/playlist?list=PLillGF-RfqbbQeVSccR9PGKHzPJSWqcsm)
 - [Code @ GitHub](https://github.com/bradtraversy/mern-tutorial)
 - [Express & MongoDB Rest API](https://www.youtube.com/watch?v=-0exw-9YJBo)
 - [JWT Authentication](https://www.youtube.com/watch?v=enopDSs3DRw)
