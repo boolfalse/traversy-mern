@@ -1,6 +1,22 @@
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {FaUser} from "react-icons/fa";
+import {
+    // useSelector is a hook that allows us to access the state of the store
+    // instead of using the store directly, we use useSelector to access the state of the store
+    // it returns the state of the store as an object
+    // in other words, useSelector is used to select something from the state (user, isLoading, etc)
+    // in our case, the state of the store is the user object
+    useSelector,
+    // useDispatch is a hook, which returns a function that allows us to dispatch actions to the store
+    // in other words, useDispatch is used to dispatch actions to the store
+    // in our case: for dispatching the functions like "register", async Thunk, or "reset" in our reducer
+    useDispatch
+} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+import {register, reset} from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -11,15 +27,55 @@ const Register = () => {
     });
     const { name, email, password, confirm_password } = formData;
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // here the "state" is a global state of the store,
+    // so we'll just retrieve the part of the state that we need (state.auth in our case)
+    const {user, isLoading, isSuccess, isError, message} = useSelector(state => state.auth);
+
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+        if (isSuccess || user) { // "fullfilled" case or this means that the user is logged in
+            navigate("/");
+        }
+
+        dispatch(reset()); // reset the state of the store to the initial
+    }, [
+        user,
+        isSuccess,
+        isError,
+        message,
+        navigate, // for avoiding the useEffect's stupid warning
+        dispatch,
+    ]);
+
     const onSubmit = e => {
         e.preventDefault();
-        console.log(formData);
+
+        if (password === confirm_password) {
+            // this is the data that we'll send to the Thunk action creator,
+            // as the first argument of createAsyncThunk's async function
+            const userData = { name, email, password };
+            dispatch(register(userData));
+        } else {
+            toast.error("Passwords do not match!");
+            return;
+        }
+    }
+
+    if (isLoading) {
+        return <Spinner />;
     }
 
     return (
         <>
             <section className='heading'>
-                <FaUser /> Register
+                <h1>
+                    <FaUser /> Register
+                </h1>
                 <p>Create an account</p>
             </section>
             <section className='form'>

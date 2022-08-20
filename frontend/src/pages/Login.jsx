@@ -1,6 +1,11 @@
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {FaSignInAlt} from "react-icons/fa";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+import {login, reset} from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -9,9 +14,42 @@ const Login = () => {
     });
     const { email, password } = formData;
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const {user, isLoading, isSuccess, isError, message} = useSelector(state => state.auth);
+
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+        if (isSuccess || user) { // "fullfilled" case or this means that the user is logged in
+            navigate("/");
+        }
+
+        dispatch(reset()); // reset the state of the store to the initial
+    }, [
+        user,
+        isSuccess,
+        isError,
+        message,
+        navigate, // for avoiding the useEffect's stupid warning
+        dispatch,
+    ]);
+
     const onSubmit = e => {
         e.preventDefault();
-        console.log(formData);
+        if (password.length > 0) {
+            const userData = { email, password };
+            dispatch(login(userData));
+        } else {
+            toast.error("Password is required!");
+            return;
+        }
+    }
+
+    if (isLoading) {
+        return <Spinner />;
     }
 
     return (
