@@ -5,7 +5,7 @@ import axios from "axios";
 // we could also use something like process.env.REACT_APP_API_URL
 const API_URL = "/api/users/";
 
-export default {
+const authService = {
     register: async (userData) => {
         // with fetch
         // const res = await fetch('/api/auth/register', {
@@ -38,4 +38,6 @@ export default {
 
         return response.data;
     }
-}
+};
+
+export default authService;
