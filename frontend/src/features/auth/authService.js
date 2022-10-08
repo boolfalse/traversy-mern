@@ -24,9 +24,9 @@ const authService = {
             localStorage.setItem("user", JSON.stringify(response.data.data));
         }
 
-        return response.data;
+        return response.data.data;
     },
-    logout: async (user) => {
+    logout: async () => {
         localStorage.removeItem("user");
     },
     login: async (userData) => {
@@ -36,7 +36,7 @@ const authService = {
             localStorage.setItem("user", JSON.stringify(response.data.data));
         }
 
-        return response.data;
+        return response.data.data;
     }
 };
 

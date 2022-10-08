@@ -7,7 +7,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 
 // initial state
 const initialState = {
-    user: user ? user : null,
+    user: user ? user : null, // user
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -31,17 +31,18 @@ export const register = createAsyncThunk(
             return await authService.register(user);
         } catch (err) {
             const message = (err.response && err.response.data.message) || err.message || err.toString();
-            thunkAPI.rejectWithValue(message);
+            return thunkAPI.rejectWithValue(message);
         }
-});
+    }
+);
 
 // user logout
 export const logout = createAsyncThunk('auth/logout', async (user, thunkAPI) => {
     try {
-        return await authService.logout(user);
+        return await authService.logout(); // no need to pass user
     } catch (err) {
         const message = (err.response && err.response.data.message) || err.message || err.toString();
-        thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
@@ -51,7 +52,7 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
         return await authService.login(user);
     } catch (err) {
         const message = (err.response && err.response.data.message) || err.message || err.toString();
-        thunkAPI.rejectWithValue(message);
+        return thunkAPI.rejectWithValue(message);
     }
 });
 
@@ -59,6 +60,7 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        // synchronous actions in 'reducers'
         // dispatch this action after register and reset it back to initial state
         reset: (state) => { // we'll import and use this in Register.jsx
             state.isLoading = false;
@@ -67,13 +69,14 @@ export const authSlice = createSlice({
             state.message = '';
         }
     },
-    extraReducers: builder => {
+    extraReducers: (builder) => {
+        // asynchronous actions in 'extraReducers'
         builder
             // what to set the state in case when register action is dispatched
             .addCase(register.pending, (state, action) => {
                 state.isLoading = true;
             })
-            // what to set the state in case when register action is resolved
+            // what to set the state in case when register action is resolved and data gets returned
             .addCase(register.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
@@ -84,9 +87,6 @@ export const authSlice = createSlice({
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload; // from createAsyncThunk rejectWithValue (from "catch" body)
-                state.user = null;
-            })
-            .addCase(logout.fulfilled, (state, action) => {
                 state.user = null;
             })
             .addCase(login.pending, (state, action) => {
@@ -103,10 +103,13 @@ export const authSlice = createSlice({
                 state.message = action.payload;
                 state.user = null;
             })
+            .addCase(logout.fulfilled, (state, action) => {
+                state.user = null;
+            })
     }
 });
 
 // for exporting the reducer functions
-// so with this way we can dispatch that to some component
+// so with this way we can dispatch that into some component
 export const { reset } = authSlice.actions;
 export default authSlice.reducer;

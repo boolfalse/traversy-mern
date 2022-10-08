@@ -27,12 +27,12 @@ const Register = () => {
     });
     const { name, email, password, confirm_password } = formData;
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     // here the "state" is a global state of the store,
     // so we'll just retrieve the part of the state that we need (state.auth in our case)
-    const {user, isLoading, isSuccess, isError, message} = useSelector(state => state.auth);
+    const {user, isLoading, isSuccess, isError, message} = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (isError) {
@@ -42,6 +42,7 @@ const Register = () => {
             navigate("/");
         }
 
+        // set everything back, whether it's a success or an error
         dispatch(reset()); // reset the state of the store to the initial
     }, [
         user,
@@ -62,7 +63,6 @@ const Register = () => {
             dispatch(register(userData));
         } else {
             toast.error("Passwords do not match!");
-            return;
         }
     }
 
@@ -86,7 +86,8 @@ const Register = () => {
                                id='name'
                                name='name'
                                value={name}
-                               placeholder='Name'
+                               placeholder='Enter your name'
+                               className='form-control'
                                autoComplete='off'
                         />
                     </div>
@@ -96,7 +97,8 @@ const Register = () => {
                                id='email'
                                name='email'
                                value={email}
-                               placeholder='Email'
+                               placeholder='Enter your email'
+                               className='form-control'
                                autoComplete='off'
                         />
                     </div>
@@ -106,7 +108,8 @@ const Register = () => {
                                id='password'
                                name='password'
                                value={password}
-                               placeholder='Password'
+                               placeholder='Type the password'
+                               className='form-control'
                                autoComplete='off'
                         />
                     </div>
@@ -116,7 +119,8 @@ const Register = () => {
                                id='confirm_password'
                                name='confirm_password'
                                value={confirm_password}
-                               placeholder='Confirm Password'
+                               placeholder='Confirm your password'
+                               className='form-control'
                                autoComplete='off'
                         />
                     </div>

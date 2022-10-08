@@ -14,8 +14,8 @@ const Login = () => {
     });
     const { email, password } = formData;
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const {user, isLoading, isSuccess, isError, message} = useSelector(state => state.auth);
 
@@ -39,12 +39,12 @@ const Login = () => {
 
     const onSubmit = e => {
         e.preventDefault();
+
         if (password.length > 0) {
             const userData = { email, password };
             dispatch(login(userData));
         } else {
             toast.error("Password is required!");
-            return;
         }
     }
 
@@ -66,7 +66,8 @@ const Login = () => {
                                id='email'
                                name='email'
                                value={email}
-                               placeholder='Email'
+                               placeholder='Enter your email'
+                               className='form-control'
                                autoComplete='off'
                         />
                     </div>
@@ -76,7 +77,8 @@ const Login = () => {
                                id='password'
                                name='password'
                                value={password}
-                               placeholder='Password'
+                               placeholder='Type the password'
+                               className='form-control'
                                autoComplete='off'
                         />
                     </div>
