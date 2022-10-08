@@ -4,6 +4,12 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/user');
 
+const generateToken = (userId) => {
+    return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN || '30d',
+    });
+}
+
 module.exports = {
     register: asyncHandler(async (req, res) => {
         const { name, email, password } = req.body;
@@ -46,9 +52,7 @@ module.exports = {
         });
 
         if (user) {
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-                expiresIn: process.env.JWT_EXPIRES_IN || '30d',
-            });
+            const token = generateToken(user._id);
 
             return res.status(201).json({
                 success: true,
@@ -92,9 +96,7 @@ module.exports = {
             });
         }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRES_IN || '30d',
-        });
+        const token = generateToken(user._id);
 
         return res.status(200).json({
             success: true,
@@ -108,6 +110,10 @@ module.exports = {
         });
     }),
     profile: asyncHandler(async (req, res) => {
+        // no need to check if user exists because auth middleware already does that
+        // const userId = req.user.id || req.params.id;
+        // const user = await User.findById(userId).select('-password');
+
         return res.status(200).json({
             success: true,
             data: req.user,

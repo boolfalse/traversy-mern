@@ -31,7 +31,7 @@ module.exports = {
 
         try {
             const goal = await Goal.create({
-                ...req.body,
+                text: req.body.text,
                 user: req.user.id,
             });
 
@@ -130,7 +130,7 @@ module.exports = {
                 return res.status(200).json({
                     success: true,
                     data: {
-                        id: deletedGoal._id,
+                        id: deletedGoal._id, // id
                     },
                     message: `Goal with id ${id} deleted.`
                 });
